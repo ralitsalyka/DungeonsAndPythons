@@ -1,5 +1,7 @@
 import unittest
 from character import Character
+from weapon import Weapon
+from spell import Spell
 
 class TestCharacterInitialization(unittest.TestCase):
 
@@ -103,6 +105,35 @@ class TestCharacterMethods(unittest.TestCase):
 
         self.assertTrue(result_health == expected_health, 'Healths are equal')
         self.assertTrue(result_value == expected_value, 'Values are equal')
+
+
+    def test_can_cast_fucntion_if_it_is_equal(self):
+        character = Character(10,10)
+        character.learn(Spell('BlackMagic',20,0,0))
+        result=character.can_cast()
+
+        self.assertTrue(result)
+
+    def test_attack_fucntion_if_it_is_working_for_spell(self):
+        character = Character(10,10)
+        character.learn(Spell('BlackMagic',20,20,20))
+        result=character.attack('spell')
+
+        self.assertEqual(result,20)
+
+    def test_attack_fucntion_if_it_is_working_for_weapon(self):
+        character = Character(10,10)
+        character.equip(Weapon('Weapon',20))
+        result=character.attack('weapon')
+
+        self.assertEqual(result,20)
+
+    def test_attack_fucntion_if_it_is_working_without_weapon_and_spell(self):
+        character = Character(10,10)
+        character.equip(Weapon('Weapon',20))
+        result=character.attack('')
+
+        self.assertEqual(result,0)
 
     
 

@@ -1,3 +1,6 @@
+from weapon import Weapon
+from spell import Spell
+
 class Character:
     def __init__(self,health,mana):
         self.validate_values(health,mana)
@@ -6,6 +9,7 @@ class Character:
         self.__initial_mana = mana
         self.__current_health = health
         self.__current_mana = mana
+        self.__attack_points=0
         self.weapon = None
         self.spell = None
         self.coordinate_x = None
@@ -29,10 +33,25 @@ class Character:
         return self.__current_mana
 
     def can_cast(self):
-        pass
+        if self.spell!=None:
+            return self.__current_mana>=self.spell.get_mana_cost()
+        else:
+            return False
     
-    def attack():
-        pass
+    def attack(self, by=''):
+        if by == 'weapon':
+            if self.weapon.get_damage()!=0:
+                return self.weapon.get_damage()
+            else:
+                return self.__attack_points
+        elif by == 'spell':
+            if self.spell.get_damage() !=0:
+                self.__current_mana -= self.spell.get_mana_cost()
+                return self.spell.get_damage()
+            else:
+                return self.__attack_points
+        else:
+            return self.__attack_points
 
     def take_damage(self,damage):
         if self.__current_health - damage <= 0:
