@@ -3,7 +3,7 @@ from character import Character
 
 class TestCharacterInitialization(unittest.TestCase):
 
-    def test_raises_exception_when_health_is_not_of_float_type(self):
+    def test_raises_exception_when_health_is_not_of_int_type(self):
         exc = None
 
         try:
@@ -14,7 +14,7 @@ class TestCharacterInitialization(unittest.TestCase):
         self.assertIsNotNone(exc)
         self.assertEqual(str(exc),'Incorrect value for health!')
 
-    def test_raises_exception_when_mana_is_not_of_float_type(self):
+    def test_raises_exception_when_mana_is_not_of_int_type(self):
         exc = None
 
         try:
