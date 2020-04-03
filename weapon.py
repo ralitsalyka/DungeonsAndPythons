@@ -8,6 +8,9 @@ class Weapon:
     def __str__(self):
         return f'The weapon is {self.name} and has {self.damage} damage'
 
+    def __eq__(self,other):
+        return self.name == other.name and self.damage == other.damage
+
     def get_damage(self):
         return self.damage
 
