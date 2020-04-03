@@ -10,6 +10,8 @@ class Spell:
     def __str__(self):
         return f'The spell is {self.name} and has {self.damage} damage, {self.mana_cost} mana cost and {self.cast_range} cast range'
 
+    def __eq__(self,other):
+        return self.name == other.name and self.damage == other.damage and self.mana_cost == other.mana_cost and self.cast_range == other.cast_range
 
     def get_damage(self):
         return self.damage
