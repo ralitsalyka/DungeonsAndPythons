@@ -106,6 +106,35 @@ class TestCharacterMethods(unittest.TestCase):
         self.assertTrue(result_health == expected_health, 'Healths are equal')
         self.assertTrue(result_value == expected_value, 'Values are equal')
 
+    def test_equip_method_raises_exception_when_weapon_is_of_wrong_type(self):
+        exc = None
+        character = Character(10,10)
+        
+        try:
+            character.equip(1)
+        except Exception as err:
+            exc = err
+
+        self.assertIsNotNone(exc)
+        self.assertEqual(str(exc),'Wrong value - it must be of Weapon type!')
+
+    def test_learn_method_raises_exception_when_spell_is_of_wrong_type(self):
+        exc = None
+        character = Character(10,10)
+        
+        try:
+            character.learn(1)
+        except Exception as err:
+            exc = err
+
+        self.assertIsNotNone(exc)
+        self.assertEqual(str(exc),'Wrong value - it must be of Spell type!')
+
+    def test_can_cast_fucntion_if_it_is_not_equal(self):
+        character = Character(10,10)
+        result=character.can_cast()
+
+        self.assertFalse(result)
 
     def test_can_cast_fucntion_if_it_is_equal(self):
         character = Character(10,10)
@@ -135,7 +164,18 @@ class TestCharacterMethods(unittest.TestCase):
 
         self.assertEqual(result,0)
 
-    
+    def test_take_mana_method_when_mana_is_not_fully_restored(self):
+        character = Character(10,10)
+        character.current_mana=2
+        character.take_mana(5)
 
+        self.assertEqual(character.get_mana(),7)
+
+    def test_take_mana_method_when_mana_is_fully_restored(self):
+        character = Character(10,10)
+        character.current_mana=7
+        character.take_mana(5)
+
+        self.assertEqual(character.get_mana(),10)
 if __name__ == '__main__':
     unittest.main()
