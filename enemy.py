@@ -1,7 +1,7 @@
 from character import Character
 
 class Enemy(Character):
-    def __init__(self,health=100, mana=100, damage=20):
+    def __init__(self,health, mana, damage):
         self.damage=damage
         super().__init__(health,mana)
 
@@ -9,6 +9,11 @@ class Enemy(Character):
     def get_damage(self):
         return self.damage
 
+    def __repr__(self):
+        return f'Enemy: health = {self.current_health}, mana = {self.current_mana}, damage = {self.damage}'
+
+    def __str__(self):
+        return f'Health = {self.current_health}, mana = {self.current_mana}, damage = {self.damage}'
 
 def main():
     enemy=Enemy()
