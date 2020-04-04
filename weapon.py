@@ -11,6 +11,9 @@ class Weapon:
     def __eq__(self,other):
         return self.name == other.name and self.damage == other.damage
 
+    def get_name(self):
+        return self.name
+
     def get_damage(self):
         return self.damage
 
