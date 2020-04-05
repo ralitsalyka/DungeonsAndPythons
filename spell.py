@@ -13,6 +13,9 @@ class Spell:
     def __eq__(self,other):
         return self.name == other.name and self.damage == other.damage and self.mana_cost == other.mana_cost and self.cast_range == other.cast_range
 
+    def get_name(self):
+        return self.name
+
     def get_damage(self):
         return self.damage
 
