@@ -23,6 +23,8 @@ class Character:
         elif self.weapon == weapon:
             print('You have already equipped this weapon')
             return
+        elif self.weapon < weapon:
+            self.weapon = weapon
 
     def learn(self,spell):
         if not isinstance(spell,Spell):
