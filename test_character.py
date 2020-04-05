@@ -157,6 +157,14 @@ class TestCharacterMethods(unittest.TestCase):
 
         self.assertEqual(result,20)
 
+    def test_equip_method_if_it_is_working_for_weapon_with_higher_stats(self):
+        character = Character(10,10)
+        character.equip(Weapon('Weapon',20))
+        character.equip(Weapon('Weapon',50))
+        result=character.attack('weapon')
+
+        self.assertEqual(result,50)
+
     def test_attack_fucntion_if_it_is_working_without_weapon_and_spell(self):
         character = Character(10,10)
         character.equip(Weapon('Weapon',20))
