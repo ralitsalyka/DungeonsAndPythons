@@ -1,5 +1,10 @@
 from hero import Hero
 from enemy import Enemy
+from treasures import Treasure
+from weapon import Weapon
+from spell import Spell
+from utils import *
+
 available_directions = ['right','up','down','left']
 
 class Dungeon:
@@ -39,28 +44,30 @@ class Dungeon:
         m = len(self.map[0])
         for i in range(0,n):
             for j in range(0,m):
-                if i == self.spawn_y and j == self.spawn_x:
-                    if self.map[i][j] == '.':
-                        self.map[i][j] = 'H'
-                    else:
-                        print('No more free spawning points')
-                        return False
-
-                    if self.spawn_x < m-1:
-                        self.spawn_x += 1 
-                    else:
-                        self.spawn_x = 0
-                        self.spawn_y += 1
+                #print(self.map[i][j])
+                if self.map[i][j] == '.':
+                    self.map[i][j] = 'H'
+                    self.spawn_y = i
+                    self.spawn_x = j
                     flag_for_spawn = True
                     break
-                elif i <= self.spawn_y and j <= self.spawn_x:
+                elif flag_for_spawn == False:
                     continue
                 else:
                     print('No more free spawning points')
                     return False
+
+                if self.spawn_x < m-1:
+                    self.spawn_x += 1 
+                else:
+                    self.spawn_x = 0
+                    self.spawn_y += 1
+                    flag_for_spawn = True
+                    break
+                
             if flag_for_spawn == True:
-                self.hero.current_y = i
-                self.hero.current_x = j
+                self.hero.coordinate_y = i
+                self.hero.coordinate_x = j
                 return flag_for_spawn
                 break
 
@@ -74,13 +81,22 @@ class Dungeon:
 
     def calculate_enemy_stats(self):
         counter = self.count_enemies()
+        if counter == 0:
+            counter = 1
         enemy_health = 100 // counter
         enemy_damage = 100 // counter
-        print(Enemy(enemy_health,100,enemy_damage))
         return Enemy(enemy_health,100,enemy_damage)
+    def warn_player_when_casting_spell(self):
+        print('If you cast your spell in that direction, you will enter a fight with an Enemy! Enemy stats are:')
+        print(self.level_enemy)
+        print('Do you want to engage in a fight? (y/n)\n') 
+        player_input = input()
+        while player_input != 'y' and player_input != 'n':
+            print('Invalid choice! Choose again! (y/n)\n')
+            player_input = input()
+        return player_input
 
-
-    def warn_player(self):
+    def warn_player_when_walking(self):
         print('You are about to enter a fight with an Enemy! Enemy stats are:')
         print(self.level_enemy)
         print('Do you want to engage in a fight? (y/n)\n') 
@@ -90,6 +106,10 @@ class Dungeon:
             player_input = input()
         return player_input
 
+    def regenerate_hero_mana(self):
+        if self.hero.current_mana < self.hero.initial_mana:
+            self.hero.take_mana(self.hero.mana_regeneration_rate)
+    
     def move_hero(self,direction):
         if not isinstance(direction,str):
             raise ValueError('Wrong input - you must enter string!')
@@ -101,99 +121,93 @@ class Dungeon:
             print('Your hero is dead. He cannot move.')
             return
 
+        self.hero.direction = direction
+
+        oldX = self.hero.coordinate_x
+        oldY = self.hero.coordinate_y
+        newX = self.hero.coordinate_x
+        newY = self.hero.coordinate_y
         if direction == 'right':
-            newX = self.hero.current_x + 1
-            if newX > len(self.map[0]):
-                print('Hero is on the edge of the map - you cannot go outside it!')
-                return False
-            elif self.map[self.hero.current_y][newX] == '#':
-                print('There is an obstacle - you can not move there!')
-                return False
-            elif self.map[self.hero.current_y][newX] == 'T':
-                print('You have found a treasure!')
-                self.map[self.hero.current_y][newX] = 'H'
-                self.map[self.hero.current_y][newX-1] = '.'
-                self.hero.current_x += 1
-                return True
-            elif self.map[self.hero.current_y][newX] == '.':
-                self.map[self.hero.current_y][newX] = 'H'
-                self.map[self.hero.current_y][newX-1] = '.'
-                self.hero.current_x += 1
-                return True
-            elif self.map[self.hero.current_y][newX] == 'E':
-                choice = self.warn_player()
-                if choice == 'n':
-                    return False
-
+            newX += 1
         elif direction == 'left':
-            newX = self.hero.current_x - 1
-            if newX < 0:
-                print('Hero is on the edge of the map - you cannot go outside it!')
-                return False
-            elif self.map[self.hero.current_y][newX] == '#':
-                print('There is an obstacle - you can not move there!')
-                return False
-            elif self.map[self.hero.current_y][newX] == 'T':
-                print('You have found a treasure!')
-                self.map[self.hero.current_y][newX] = 'H'
-                self.map[self.hero.current_y][newX+1] = '.'
-                self.hero.current_x -= 1
-                return True
-            elif self.map[self.hero.current_y][newX] == '.':
-                self.map[self.hero.current_y][newX] = 'H'
-                self.map[self.hero.current_y][newX+1] = '.'
-                self.hero.current_x -= 1
-                return True
-            elif self.map[self.hero.current_y][newX] == 'E':
-                choice = self.warn_player()
-                if choice == 'n':
-                    return False
-
+            newX -= 1
         elif direction == 'up':
-            newY = self.hero.current_y - 1
-            if newY < 0:
-                print('Hero is on the edge of the map - you cannot go outside it!')
-                return False
-            elif self.map[newY][self.hero.current_x] == '#':
-                print('There is an obstacle - you can not move there!')
-                return False
-            elif self.map[newY][self.hero.current_x] == 'T':
-                print('You have found a treasure!')
-                self.map[newY][self.hero.current_x] = 'H'
-                self.map[newY+1][self.hero.current_x] = '.'
-                self.hero.current_y -= 1
-                return True
-            elif self.map[newY][self.hero.current_x] == '.':
-                self.map[newY][self.hero.current_x] = 'H'
-                self.map[newY+1][self.hero.current_x] = '.'
-                self.hero.current_y -= 1
-                return True
-            elif self.map[newY][self.hero.current_x] == 'E':
-                choice = self.warn_player()
-                if choice == 'n':
-                    return False
+            newY -= 1
+        else:
+            newY += 1
+        
+        if newX > len(self.map[0]) or newX < 0 or newY > len(self.map) or newY < 0:
+            print('Hero is on the edge of the map - you cannot go outside it!')
+            return False
+        elif self.map[newY][newX] == '#':
+            print('There is an obstacle - you can not move there!')
+            return False
+        elif self.map[newY][newX] == 'T':
+            print('You have found a treasure!',end=' ')
 
-        elif direction == 'down':
-            newY = self.hero.current_y + 1
-            if newY > len(self.map):
-                print('Hero is on the edge of the map - you cannot go outside it!')
+            new_treasure = Treasure()
+            kind = new_treasure.get_kind_of_treasure()
+            result = new_treasure.pick_treasure()
+            if kind == 'weapon':
+                print(result)
+                self.hero.equip(result)
+            elif kind == 'spell':
+                print(result)
+                self.hero.learn(result)
+            elif kind == 'mana potion':
+                print('This mana potion restores ' + str(result) + ' mana')
+                self.hero.take_mana(result)
+            else:
+                print('This health potion restores ' + str(result) + ' health')
+                self.hero.take_healing(result)
+
+            self.map[newY][newX] = 'H'
+            self.map[oldY][oldX] = '.'
+            self.hero.coordinate_x = newX
+            self.hero.coordinate_y = newY
+            self.regenerate_hero_mana()
+            return True
+        elif self.map[newY][newX] == '.':
+            self.map[newY][newX] = 'H'
+            self.map[oldY][oldX] = '.'
+            self.hero.coordinate_x = newX
+            self.hero.coordinate_y = newY
+            self.regenerate_hero_mana()
+            return True
+        elif self.map[newY][newX] == 'E':
+            choice = self.warn_player_when_walking()
+            if choice == 'n':
                 return False
-            elif self.map[newY][self.hero.current_x] == '#':
-                print('There is an obstacle - you can not move there!')
+
+    def hero_attack(self,by=''):
+        if by == 'weapon':
+            print('Weapons can attack only enemies on your position')
+            return False
+
+        if by == 'spell':
+            if self.hero.spell is None:
+                print('You do not have a spell to attack by a spell!')
                 return False
-            elif self.map[newY][self.hero.current_x] == 'T':
-                print('You have found a treasure!')
-                self.map[newY][self.hero.current_x] = 'H'
-                self.map[newY-1][self.hero.current_x] = '.'
-                self.hero.current_y += 1
-                return True
-            elif self.map[newY][self.hero.current_x] == '.':
-                self.map[newY][self.hero.current_x] = 'H'
-                self.map[newY-1][self.hero.current_x] = '.'
-                self.hero.current_y += 1
-                return True
-            elif self.map[newY][self.hero.current_x] == 'E':
-                choice = self.warn_player()
+            if self.hero.direction == 'right':
+                list_of_values = self.map[self.hero.coordinate_y][self.hero.coordinate_x+1:self.hero.coordinate_x+self.hero.spell.cast_range+1]
+            elif self.hero.direction == 'left':
+                if self.hero.coordinate_x-self.hero.spell.cast_range < 0:
+                    newX = 0
+                else:
+                    newX = self.hero.coordinate_x-self.hero.spell.cast_range
+                list_of_values = self.map[self.hero.coordinate_y][newX:self.hero.coordinate_x]
+            elif self.hero.direction == 'up':
+                new_map = transpose_matrix(self.map)
+                if self.hero.coordinate_y-self.hero.spell.cast_range < 0:
+                    newX = 0
+                else:
+                    newX = self.hero.coordinate_y-self.hero.spell.cast_range
+                list_of_values = new_map[self.hero.coordinate_x][newX:self.hero.coordinate_y]
+            else:
+                new_map = transpose_matrix(self.map)
+                list_of_values = new_map[self.hero.coordinate_x][self.hero.coordinate_y+1:self.hero.coordinate_y+self.hero.spell.cast_range+1]
+            if 'E' in list_of_values:
+                choice = self.warn_player_when_casting_spell()
                 if choice == 'n':
                     return False
 
@@ -203,7 +217,10 @@ class Dungeon:
             raise ValueError('File name must be string!')
 
 def main():
+
     hero = Hero('Ivan','Hacker',30,40,5)
+    hero.equip(Weapon(name='--Daggers--', damage=10))
+    hero.learn(Spell(name='--Freezing spell--', damage=30, mana_cost=50, cast_range=2))
     dungeon = Dungeon('level1.txt')
     dungeon.print_map()
     dungeon.spawn(hero)
@@ -219,7 +236,8 @@ def main():
     dungeon.move_hero('down')
     dungeon.print_map()
     dungeon.move_hero('right')
-    dungeon.move_hero('down')
-    
+    dungeon.hero_attack('spell')
+    dungeon.print_map()
+
 if __name__ == '__main__':
     main()
