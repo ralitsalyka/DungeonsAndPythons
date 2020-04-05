@@ -41,5 +41,11 @@ class TestWeaponMethods(unittest.TestCase):
 
         self.assertTrue(weapon1 == weapon2, 'Weapons are equal')
 
+    def test_lt_method(self):
+        weapon1 = Weapon('Ivan',20)
+        weapon2 = Weapon('Ivan',40)
+
+        self.assertTrue(weapon1 < weapon2, 'First weapon is greater than second weapon')
+
 if __name__ == '__main__':
     unittest.main()
