@@ -33,22 +33,20 @@ class Treasures:
 
     def pick_treasure(self):
         if self.kind_of_treasure == 'mana':
-            # Character.take_mana(self.treasure)
-            return f'Hero has found {self.kind_of_treasure} treasure. + {self.treasure}'
+            print("Hero has found a mana!")
+            return self.treasure
 
         elif self.kind_of_treasure == 'health':
-            # Character.take_healing(self.treasure)
-            return f'Hero has found {self.kind_of_treasure} treasure. + {self.treasure}'
+            print('Hero has found a health treasure!')
+            return self.treasure
 
         elif self.kind_of_treasure == 'weapons':
-            weapon = self.treasure
-            # Character.equip(weapon)
-            return f'Hero has equipped with {weapon.get_name()}.'
+            print("Hero has found a weapon!")
+            return self.treasure
 
         elif self.kind_of_treasure == 'spells':
-            spell = self.treasure
-            # Character.learn(spell)
-            return f'Hero has learned {spell.get_name()}.'
+            print("Hero has learned a spell!")
+            return self.treasure
 
 
 treasure = Treasures()
