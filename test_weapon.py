@@ -31,7 +31,7 @@ class TestWeaponMethods(unittest.TestCase):
         weapon = Weapon('Ivan',20)
 
         result = str(weapon)
-        expected = 'The weapon is Ivan and has 20 damage'
+        expected = 'The weapon is Ivan and deals 20 damage'
 
         self.assertEqual(result,expected)
 

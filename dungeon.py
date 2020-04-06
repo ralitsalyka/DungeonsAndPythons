@@ -4,8 +4,7 @@ from treasures import Treasure
 from weapon import Weapon
 from spell import Spell
 from utils import *
-
-available_directions = ['right','up','down','left']
+from fight import Fight
 
 class Dungeon:
     def __init__(self,file_name):
@@ -44,7 +43,6 @@ class Dungeon:
         m = len(self.map[0])
         for i in range(0,n):
             for j in range(0,m):
-                #print(self.map[i][j])
                 if self.map[i][j] == '.':
                     self.map[i][j] = 'H'
                     self.spawn_y = i
@@ -84,8 +82,13 @@ class Dungeon:
         if counter == 0:
             counter = 1
         enemy_health = 100 // counter
-        enemy_damage = 100 // counter
+        if enemy_health == 0:
+            enemy_health = 10   
+        enemy_damage = 30 // counter
+        if enemy_damage == 0:
+            enemy_damage = 5
         return Enemy(enemy_health,100,enemy_damage)
+
     def warn_player_when_casting_spell(self):
         print('If you cast your spell in that direction, you will enter a fight with an Enemy! Enemy stats are:')
         print(self.level_enemy)
@@ -110,6 +113,13 @@ class Dungeon:
         if self.hero.current_mana < self.hero.initial_mana:
             self.hero.take_mana(self.hero.mana_regeneration_rate)
     
+    def move_and_regenerate(self,oldX,oldY,newX,newY):
+        self.map[newY][newX] = 'H'
+        self.map[oldY][oldX] = '.'
+        self.hero.coordinate_x = newX
+        self.hero.coordinate_y = newY
+        self.regenerate_hero_mana()
+
     def move_hero(self,direction):
         if not isinstance(direction,str):
             raise ValueError('Wrong input - you must enter string!')
@@ -127,16 +137,16 @@ class Dungeon:
         oldY = self.hero.coordinate_y
         newX = self.hero.coordinate_x
         newY = self.hero.coordinate_y
-        if direction == 'right':
+        if direction == right:
             newX += 1
-        elif direction == 'left':
+        elif direction == left:
             newX -= 1
-        elif direction == 'up':
+        elif direction == up:
             newY -= 1
         else:
             newY += 1
         
-        if newX > len(self.map[0]) or newX < 0 or newY > len(self.map) or newY < 0:
+        if newX >= len(self.map[0])-1 or newX < 0 or newY >= len(self.map) or newY < 0:
             print('Hero is on the edge of the map - you cannot go outside it!')
             return False
         elif self.map[newY][newX] == '#':
@@ -144,59 +154,46 @@ class Dungeon:
             return False
         elif self.map[newY][newX] == 'T':
             print('You have found a treasure!',end=' ')
-
-            new_treasure = Treasure()
-            kind = new_treasure.get_kind_of_treasure()
-            result = new_treasure.pick_treasure()
-            if kind == 'weapon':
-                print(result)
-                self.hero.equip(result)
-            elif kind == 'spell':
-                print(result)
-                self.hero.learn(result)
-            elif kind == 'mana potion':
-                print('This mana potion restores ' + str(result) + ' mana')
-                self.hero.take_mana(result)
-            else:
-                print('This health potion restores ' + str(result) + ' health')
-                self.hero.take_healing(result)
-
-            self.map[newY][newX] = 'H'
-            self.map[oldY][oldX] = '.'
-            self.hero.coordinate_x = newX
-            self.hero.coordinate_y = newY
-            self.regenerate_hero_mana()
+            hero_find_treasure(self.hero)
+            self.move_and_regenerate(oldX,oldY,newX,newY)
             return True
         elif self.map[newY][newX] == '.':
-            self.map[newY][newX] = 'H'
-            self.map[oldY][oldX] = '.'
-            self.hero.coordinate_x = newX
-            self.hero.coordinate_y = newY
-            self.regenerate_hero_mana()
+            self.move_and_regenerate(oldX,oldY,newX,newY)
             return True
         elif self.map[newY][newX] == 'E':
             choice = self.warn_player_when_walking()
             if choice == 'n':
                 return False
+            else:
+                fight = Fight(self.hero,self.level_enemy,['E'])
+                outcome = fight.fight()
+                if outcome == True:
+                    self.move_and_regenerate(oldX,oldY,newX,newY)
+                    return True
+                else:
+                    return False
+        elif self.map[newY][newX] == 'G':
+            print('Congratulations! You have completed the level!')
+            return True
 
     def hero_attack(self,by=''):
-        if by == 'weapon':
+        if by == weapon:
             print('Weapons can attack only enemies on your position')
             return False
 
-        if by == 'spell':
+        if by == spell and self.hero.can_cast():
             if self.hero.spell is None:
                 print('You do not have a spell to attack by a spell!')
                 return False
-            if self.hero.direction == 'right':
+            if self.hero.direction == right:
                 list_of_values = self.map[self.hero.coordinate_y][self.hero.coordinate_x+1:self.hero.coordinate_x+self.hero.spell.cast_range+1]
-            elif self.hero.direction == 'left':
+            elif self.hero.direction == left:
                 if self.hero.coordinate_x-self.hero.spell.cast_range < 0:
                     newX = 0
                 else:
                     newX = self.hero.coordinate_x-self.hero.spell.cast_range
                 list_of_values = self.map[self.hero.coordinate_y][newX:self.hero.coordinate_x]
-            elif self.hero.direction == 'up':
+            elif self.hero.direction == up:
                 new_map = transpose_matrix(self.map)
                 if self.hero.coordinate_y-self.hero.spell.cast_range < 0:
                     newX = 0
@@ -206,10 +203,30 @@ class Dungeon:
             else:
                 new_map = transpose_matrix(self.map)
                 list_of_values = new_map[self.hero.coordinate_x][self.hero.coordinate_y+1:self.hero.coordinate_y+self.hero.spell.cast_range+1]
+            
+            if self.hero.direction == up or self.hero.direction == left:
+                list_of_values = list_of_values[::-1]
+             
             if 'E' in list_of_values:
+                index_of_enemy = list_of_values.index('E')
+                if list_of_values[index_of_enemy-1] == '#':
+                    print('Nothing to cast against your spell in that direction.')
+                    return False
+
                 choice = self.warn_player_when_casting_spell()
                 if choice == 'n':
                     return False
+                else:
+                    fight = Fight(self.hero,self.level_enemy,list_of_values)
+                    outcome = fight.fight()
+                    if outcome == True:
+                        return True
+                    else:
+                        return False
+            else:
+                print('Nothing in casting range '+str(self.hero.spell.cast_range))
+        else:
+            print("You don't have enough mana to cast that spell!")
 
     @staticmethod
     def validate_values(file_name):
@@ -217,27 +234,18 @@ class Dungeon:
             raise ValueError('File name must be string!')
 
 def main():
-
+    pass
+'''
     hero = Hero('Ivan','Hacker',30,40,5)
     hero.equip(Weapon(name='--Daggers--', damage=10))
-    hero.learn(Spell(name='--Freezing spell--', damage=30, mana_cost=50, cast_range=2))
-    dungeon = Dungeon('level1.txt')
+    hero.learn(Spell(name='--Freezing spell--', damage=30, mana_cost=5, cast_range=2))
+    dungeon = Dungeon('level3.txt')
     dungeon.print_map()
     dungeon.spawn(hero)
     dungeon.print_map()
-    dungeon.move_hero('right')
+    dungeon.move_hero(right)
     dungeon.print_map()
-    dungeon.move_hero('right')
-    dungeon.print_map()
-    dungeon.move_hero('down')
-    dungeon.print_map()
-    dungeon.move_hero('left')
-    dungeon.move_hero('down')
-    dungeon.move_hero('down')
-    dungeon.print_map()
-    dungeon.move_hero('right')
-    dungeon.hero_attack('spell')
-    dungeon.print_map()
+    dungeon.move_hero(down)'''
 
 if __name__ == '__main__':
     main()
