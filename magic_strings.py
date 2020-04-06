@@ -11,6 +11,7 @@ enemy_name = 'Enemy'
 health_potion = 'health potion'
 mana_potion = 'mana potion'
 available_directions = [right,up,down,left]
+directions = {'u':up, 'r':right, 'l':left, 'd':down}
 
 weapon_one = Weapon('Widowmaker',40)
 weapon_two = Weapon('Blade of the Reaper',50)
