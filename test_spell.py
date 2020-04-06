@@ -52,7 +52,7 @@ class TestSpellMethods(unittest.TestCase):
     def test_str_dunder(self):
         spell = Spell('Fireball',20,5,3)
 
-        expected = 'The spell is Fireball and has 20 damage, 5 mana cost and 3 cast range'
+        expected = 'The spell is Fireball and deals 20 damage, has 5 mana cost and 3 cast range'
         result = str(spell)
 
         self.assertEqual(expected,result)
@@ -61,7 +61,7 @@ class TestSpellMethods(unittest.TestCase):
         spell1 = Spell('Fireball',20,5,3)
         spell2 = Spell('Fireball',20,5,3)
 
-        self.assertTrue(spell1 == spell2, 'Weapons are equal')
+        self.assertTrue(spell1 == spell2, 'Spells are equal')
 
 
 if __name__ == '__main__':
