@@ -1,4 +1,4 @@
-from character import Character
+from .character import Character
 
 class Hero(Character):
     def __init__(self,name,title,health,mana,mana_regeneration_rate):

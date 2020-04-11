@@ -1,6 +1,6 @@
-from treasures import Treasure
-from character import Character
-from magic_strings import *
+from .treasures import Treasure
+from .character import Character
+from .magic_strings import *
 
 def enemy_find_treasure(character):
     print('Enemy has found a treasure!',end = " ")

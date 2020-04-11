@@ -1,5 +1,6 @@
-from weapon import Weapon
-from spell import Spell
+from dungeons_and_pythons.models import Weapon
+from dungeons_and_pythons.models import Spell
+
 
 right = 'right'
 up = 'up'

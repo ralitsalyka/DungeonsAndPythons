@@ -1,9 +1,9 @@
-from hero import Hero
-import enemy
-import weapon
-import spell
-from utils import *
-from magic_strings import *
+from dungeons_and_pythons.models import Hero
+from dungeons_and_pythons.models import Enemy
+from dungeons_and_pythons.models import Weapon
+from dungeons_and_pythons.models import Spell
+from dungeons_and_pythons.models.utils import *
+from dungeons_and_pythons.models.magic_strings import *
 
 
 class Fight:

@@ -1,5 +1,5 @@
-from weapon import Weapon
-from spell import Spell
+from .weapon import Weapon
+from .spell import Spell
 
 class Character:
     def __init__(self,health,mana):
