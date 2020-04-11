@@ -1,6 +1,7 @@
 class Weapon:
-    def __init__(self,name,damage):
-        self.validate_values(name,damage)
+
+    def __init__(self, name, damage):
+        self.validate_values(name, damage)
 
         self.name = name
         self.damage = damage
@@ -8,10 +9,10 @@ class Weapon:
     def __str__(self):
         return f'The weapon is {self.name} and deals {self.damage} damage'
 
-    def __eq__(self,other):
+    def __eq__(self, other):
         return self.name == other.name and self.damage == other.damage
 
-    def __lt__(self,other):
+    def __lt__(self, other):
         return self.damage < other.damage
 
     def get_name(self):
@@ -21,8 +22,8 @@ class Weapon:
         return self.damage
 
     @staticmethod
-    def validate_values(name,damage):
-        if not isinstance(name,str):
+    def validate_values(name, damage):
+        if not isinstance(name, str):
             raise ValueError('Weapon name must be string!')
-        elif not isinstance(damage,int):
+        elif not isinstance(damage, int):
             raise ValueError('Damage must be int!')

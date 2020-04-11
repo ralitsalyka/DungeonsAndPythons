@@ -11,20 +11,20 @@ weapon = 'weapon'
 enemy_name = 'Enemy'
 health_potion = 'health potion'
 mana_potion = 'mana potion'
-available_directions = [right,up,down,left]
-directions = {'u':up, 'r':right, 'l':left, 'd':down}
+available_directions = [right, up, down, left]
+directions = {'u': up, 'r': right, 'l': left, 'd': down}
 
-weapon_one = Weapon('Widowmaker',40)
-weapon_two = Weapon('Blade of the Reaper',50)
-weapon_three = Weapon('Poisonous daggers',30)
-weapon_four = Weapon('Moonlight Idol',25)
-weapon_five = Weapon('Netherbane, Might of the Void',55)
+weapon_one = Weapon('Widowmaker', 40)
+weapon_two = Weapon('Blade of the Reaper', 50)
+weapon_three = Weapon('Poisonous daggers', 30)
+weapon_four = Weapon('Moonlight Idol', 25)
+weapon_five = Weapon('Netherbane, Might of the Void', 55)
 
-spell_one = Spell('Frostbolt',30,30,1)
-spell_two = Spell('Fireball',40,40,2)
-spell_three = Spell('Arcane Missiles',10,10,1)
-spell_four = Spell('Flamestrike',50,50,3)
-spell_five = Spell('Deadly shot',35,20,2)
+spell_one = Spell('Frostbolt', 30, 30, 1)
+spell_two = Spell('Fireball', 40, 40, 2)
+spell_three = Spell('Arcane Missiles', 10, 10, 1)
+spell_four = Spell('Flamestrike', 50, 50, 3)
+spell_five = Spell('Deadly shot', 35, 20, 2)
 
 dict_of_treasures = {
             weapon: weapon_one,
