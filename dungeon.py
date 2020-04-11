@@ -5,6 +5,7 @@ from weapon import Weapon
 from spell import Spell
 from utils import *
 from fight import Fight
+from magic_strings import *
 
 
 class Dungeon:
