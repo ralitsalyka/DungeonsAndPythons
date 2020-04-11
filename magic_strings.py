@@ -43,3 +43,5 @@ dict_of_treasures = {
             health_potion: 20,
             health_potion: 25,
         }
+
+attack_dict = {'w': weapon, 's': spell}
