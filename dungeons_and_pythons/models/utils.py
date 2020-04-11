@@ -2,8 +2,9 @@ from .treasures import Treasure
 from .character import Character
 from .magic_strings import *
 
+
 def enemy_find_treasure(character):
-    print('Enemy has found a treasure!',end = " ")
+    print('Enemy has found a treasure!', end = " ")
     new_treasure = Treasure()
     kind = new_treasure.get_kind_of_treasure()
     result = new_treasure.pick_treasure()
@@ -15,6 +16,7 @@ def enemy_find_treasure(character):
         character.learn(result)
     else:
         print('Enemy throws away the potion so he can prevent our hero from successfully finishing the dungeon!')
+
 
 def hero_find_treasure(character):
     new_treasure = Treasure()
@@ -32,6 +34,7 @@ def hero_find_treasure(character):
     else:
         print('This health potion restores ' + str(result) + ' health')
         character.take_healing(result)
+
 
 def transpose_matrix(matrix):
     return [list(tup) for tup in zip(*matrix)]
