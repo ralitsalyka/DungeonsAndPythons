@@ -1,8 +1,8 @@
 import random
-from character import Character
-from weapon import Weapon
-from spell import Spell
-from magic_strings import *
+from .character import Character
+from .weapon import Weapon
+from .spell import Spell
+from dungeons_and_pythons.models.magic_strings import *
 
 class Treasure:
 

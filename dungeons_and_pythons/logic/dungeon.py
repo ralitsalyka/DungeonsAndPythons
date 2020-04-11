@@ -1,11 +1,11 @@
-from hero import Hero
-from enemy import Enemy
-from treasures import Treasure
-from weapon import Weapon
-from spell import Spell
-from utils import *
-from fight import Fight
-from magic_strings import *
+from dungeons_and_pythons.models import Hero
+from dungeons_and_pythons.models import Enemy
+from dungeons_and_pythons.models import Treasure
+from dungeons_and_pythons.models import Weapon
+from dungeons_and_pythons.models import Spell
+from dungeons_and_pythons.models.utils import *
+from .fight import Fight
+from dungeons_and_pythons.models.magic_strings import *
 
 
 class Dungeon:

@@ -1,6 +1,6 @@
-from hero import Hero
-from dungeon import Dungeon
-from magic_strings import *
+from dungeons_and_pythons.models import Hero
+from dungeons_and_pythons.logic import Dungeon
+from dungeons_and_pythons.models.magic_strings import *
 from colors import fg
 
 
